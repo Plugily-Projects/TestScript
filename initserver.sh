@@ -6,7 +6,7 @@ if [ "$EUID" -ne 0 ]
 fi
 
 
-if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ]
+if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ]  || [ -z "$4" ]
 then
     echo "Please provide four arguments"
     echo "$0 <spigot-release> <plugin-type> <plugin-release> <server-ram>"
@@ -132,7 +132,7 @@ then
   	echo "java -Xms${serverram}M -Xmx${serverram}M -jar spigot.jar">> ./Servers/$version$serverram/start_server.sh
     fi
     if [ ! -e ./Servers/$version$serverram/eula.txt ];then
-	    echo "eula: true" >> ./Servers/$version$serverram/eula.txt
+	    echo "eula=true" >> ./Servers/$version$serverram/eula.txt
     fi
     cp -v ./Plugins/LuckPerms/LuckPerms.jar ./Servers/$version$serverram/plugins
     cd ./Servers/$version$serverram
