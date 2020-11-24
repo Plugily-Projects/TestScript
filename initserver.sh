@@ -25,6 +25,7 @@ then
     echo "server-ram:"
     echo "	- 512"
     echo "	- 256"
+    echo "Add in an optional fith argument "skip" to skipp the buildtools process completly! Remember ONLY do this when the spigot.jar is ALREADY in place!"
     exit
 fi
 
@@ -34,6 +35,7 @@ pluginversion="$3" #latest, beta, stable
 downloadlink="https://api.plugily.xyz/download/fetch.php" 
 luckpermsdownloadlink=$(curl -s "https://metadata.luckperms.net/data/downloads" | ruby -rjson -e 'data = JSON.parse(STDIN.read); puts data["downloads"]["bukkit"]')
 serverram="$4"
+extras="$5"
 
 if  [ -x "$(ruby --help)" ];
 then
@@ -52,14 +54,23 @@ then
 fi
 cd BuildTools
 
-if [ -d ./spigot-*.jar ]
+if [ ! -d ./spigot-*.jar ]
 then
   rm ./spigot-.jar
 fi
 
-curl -z BuildTools.jar -o BuildTools.jar https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar
-chmod +x BuildTools.jar
-java -jar BuildTools.jar --rev $version
+if [ -z "$5"]
+then
+  extras=""
+fi
+
+#Put buildTools in a function so we don't have to run it always
+runBuildTools(){
+    curl -z BuildTools.jar -o BuildTools.jar https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar
+    chmod +x BuildTools.jar
+    java -jar BuildTools.jar --rev $version
+}
+
 
 cd ..
 if [[ ! -d ./Plugins ]];
@@ -122,8 +133,20 @@ then
 fi
 cd ./Servers
 
+runnedBuildTools="false"
+if [ $extras = "skip"];
+then
+  runnedBuildTools="true"
+fi
+
 if [[ ! -d ./$version$serverram ]]
 then
+    cd ..
+    cd ./BuildTools
+    runBuildTools
+    cd ..
+    cd ./Servers
+    runnedBuildTools="true"
     mkdir ./$version$serverram
     mkdir ./$version$serverram/plugins
     cd ..
@@ -142,6 +165,32 @@ then
     
 fi
 
+cd ..
+
+#Replace the latest version spigot version
+if [[ $version = "latest" ]];
+then
+  if [[ $runnedBuildTools -ne "true" ]];
+  then
+    cd ./BuildTools
+    runBuildTools
+    cd ..
+  fi    
+  cd ./Servers/$version$serverram
+  cd ..
+  cd ..
+  rm -f ./spigot-*.jar
+  cp -v ./BuildTools/spigot-*.jar ./Servers/$version$serverram
+  cd ./Servers/$version$serverram
+  mv ./spigot-*.jar ./spigot.jar
+  cd ..
+  cd ..
+
+fi
+
+cd ./Servers
+
+#Remove all the our own plugins
 cd ./$version$serverram/plugins
 rm -f ./BuildBattle*.jar
 rm -f ./MurderMystery*.jar
@@ -151,7 +200,9 @@ cd ..
 cd ..
 cd ..
 
+#Install LuckPerms in the server
 cp -u ./Plugins/LuckPerms/LuckPerms.jar ./Servers/$version$serverram/plugins
+
 
 if [ $plugintype = "MM" ] || [ $plugintype = "mm" ]
 then
@@ -166,5 +217,7 @@ then
   cp -u ./Plugins/BuildBattle/BuildBattle$pluginversion.jar ./Servers/$version$serverram/plugins
 fi
 
+pwd
+cd ./Servers/$version$serverram
 
-sudo screen -S "minecraft$version$serverram" ./Servers/$version$serverram/start_server.sh
+screen -S minecraft$version$serverram sudo ./start_server.sh
