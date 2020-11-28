@@ -29,7 +29,7 @@ then
     exit
 fi
 
-if ! command -v ruby &> /dev/null
+if ! [ -x "$(command -v ruby)" ];
 then
     echo "Installing Ruby and screens"
     sudo apt-get update
