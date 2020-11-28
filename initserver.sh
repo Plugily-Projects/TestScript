@@ -133,7 +133,7 @@ fi
 cd ./Servers
 
 runnedBuildTools="false"
-if [ $extras = "skip"];
+if [[ $extras == "skip" ]];
 then
   runnedBuildTools="true"
 fi
