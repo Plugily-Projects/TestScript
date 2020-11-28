@@ -1,4 +1,2 @@
-sudo rm -rf ./Servers
-sudo rm -rf ./Plugins
-sudo rm -rf ./BuildTools
+sudo rm -rf ./{Servers,Plugins,BuildTools}
 
