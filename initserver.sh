@@ -29,15 +29,7 @@ then
     exit
 fi
 
-version="$1" #Minecraft version
-plugintype="$2" #Plugin type (MM, VD, BB)
-pluginversion="$3" #latest, beta, stable
-downloadlink="https://api.plugily.xyz/download/fetch.php" 
-luckpermsdownloadlink=$(curl -s "https://metadata.luckperms.net/data/downloads" | ruby -rjson -e 'data = JSON.parse(STDIN.read); puts data["downloads"]["bukkit"]')
-serverram="$4"
-extras="$5"
-
-if  [ -x "$(ruby --help)" ];
+if ! command -v ruby &> /dev/null
 then
     echo "Installing Ruby and screens"
     sudo apt-get update
@@ -47,6 +39,13 @@ then
     sudo apt-get install screen
 fi
 
+version="$1" #Minecraft version
+plugintype="$2" #Plugin type (MM, VD, BB)
+pluginversion="$3" #latest, beta, stable
+downloadlink="https://api.plugily.xyz/download/fetch.php" 
+luckpermsdownloadlink=$(curl -s "https://metadata.luckperms.net/data/downloads" | ruby -rjson -e 'data = JSON.parse(STDIN.read); puts data["downloads"]["bukkit"]')
+serverram="$4"
+extras="$5"
 
 if [[ ! -d ./BuildTools ]]
 then
