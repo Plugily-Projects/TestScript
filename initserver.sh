@@ -18,6 +18,7 @@ then
     echo "	- MM"
     echo "	- VD"
     echo "	- BB"
+    echo "	- TB"
     echo "plugin-release:"
     echo "	- latest"
     echo "	- beta"
@@ -42,7 +43,7 @@ fi
 version="$1" #Minecraft version
 plugintype="$2" #Plugin type (MM, VD, BB)
 pluginversion="$3" #latest, beta, stable
-downloadlink="https://api.plugily.xyz/download/fetch.php" 
+downloadlink="https://api.plugily.xyz/download/get.php" 
 luckpermsdownloadlink=$(curl -s "https://metadata.luckperms.net/data/downloads" | ruby -rjson -e 'data = JSON.parse(STDIN.read); puts data["downloads"]["bukkit"]')
 serverram="$4"
 extras="$5"
@@ -78,6 +79,7 @@ then
    mkdir ./Plugins
    cd Plugins
    mkdir MurderMystery
+   mkdir TheBridge
    mkdir VillageDefense
    mkdir BuildBattle
    mkdir LuckPerms
@@ -111,8 +113,15 @@ then
    fi
     wget "$downloadlink?type=VillageDefense&version=$3" -O VillageDefense$3.jar
 fi
-
-
+if [ $plugintype = "TB" ] || [ $plugintype = "TB" ];
+then
+   cd ./TheBridge
+   if [ -d ./TheBridge$3.jar ]
+   then
+       rm ./TheBridge$3.jar
+   fi
+    wget "$downloadlink?type=TheBridge&version=$3" -O TheBridge$3.jar
+fi
 if [ $plugintype = "BB" ] || [ $plugintype = "bb" ];
 then
    cd ./BuildBattle
@@ -194,6 +203,7 @@ cd ./$version$serverram/plugins
 rm -f ./BuildBattle*.jar
 rm -f ./MurderMystery*.jar
 rm -f ./VillageDefense*.jar
+rm -f ./TheBridge*.jar
 
 cd ..
 cd ..
@@ -214,6 +224,10 @@ fi
 if [ $plugintype = "BB" ] || [ $plugintype = "bb" ] 
 then
   cp -u ./Plugins/BuildBattle/BuildBattle$pluginversion.jar ./Servers/$version$serverram/plugins
+fi
+if [ $plugintype = "TB" ] || [ $plugintype = "tb" ] 
+then
+  cp -u ./Plugins/TheBridge/TheBridge$pluginversion.jar ./Servers/$version$serverram/plugins
 fi
 
 pwd
