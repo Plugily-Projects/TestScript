@@ -38,6 +38,8 @@ then
     sudo apt-get install ruby -y
     #Install screens while we're at it
     sudo apt-get install screen
+    #Install w3m while we're at it
+    sudo apt-get install w3m
 fi
 
 version="$1" #Minecraft version
@@ -102,7 +104,7 @@ then
    then
        rm ./MurderMystery$3.jar
    fi
-    wget "$downloadlink?type=MurderMystery&version=$3" -O MurderMystery$3.jar -P ./Plugins/MurderMystery
+    w3m -dump_source "$downloadlink?type=MurderMystery&version=$3" >  ./Plugins/MurderMystery/MurderMystery$3.jar
 fi
 if [ $plugintype = "VD" ] || [ $plugintype = "vd" ];
 then
@@ -111,7 +113,7 @@ then
    then
        rm ./VillageDefense$3.jar
    fi
-    wget "$downloadlink?type=VillageDefense&version=$3" -O VillageDefense$3.jar
+    w3m -dump_source "$downloadlink?type=VillageDefense&version=$3" >  ./Plugins/VillageDefense/VillageDefense$3.jar
 fi
 if [ $plugintype = "TB" ] || [ $plugintype = "TB" ];
 then
@@ -120,7 +122,7 @@ then
    then
        rm ./TheBridge$3.jar
    fi
-    wget "$downloadlink?type=TheBridge&version=$3" -O TheBridge$3.jar
+    w3m -dump_source "$downloadlink?type=TheBridge&version=$3" >  ./Plugins/TheBridge/TheBridge$3.jar
 fi
 if [ $plugintype = "BB" ] || [ $plugintype = "bb" ];
 then
@@ -129,7 +131,7 @@ then
    then
        rm ./BuildBattle$3.jar
    fi
-    wget "$downloadlink?type=BuildBattle&version=$3" -O BuildBattle$3.jar
+    w3m -dump_source "$downloadlink?type=BuildBattle&version=$3" >  ./Plugins/BuildBattle/BuildBattle$3.jar
 fi
 cd ..
 cd ..
