@@ -45,7 +45,7 @@ fi
 version="$1" #Minecraft version
 plugintype="$2" #Plugin type (MM, VD, BB)
 pluginversion="$3" #latest, beta, stable
-downloadlink="https://api.plugily.xyz/download/get.php" 
+downloadlink="https://download.plugily.xyz/direct.php" 
 luckpermsdownloadlink=$(curl -s "https://metadata.luckperms.net/data/downloads" | ruby -rjson -e 'data = JSON.parse(STDIN.read); puts data["downloads"]["bukkit"]')
 serverram="$4"
 extras="$5"
